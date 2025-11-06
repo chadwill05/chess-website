@@ -1,84 +1,120 @@
+/**
+ * Base Piece class
+ * Uses Unicode chess symbols for display
+ */
 class Piece {
-	constructor(position, rank, name) {
-		this.position = position;
-		this.rank     = rank;
-		this.name     = name;
-		this.color    = this.name.substring(0,5);
-		this.img      = document.getElementById(this.name);
-	}
+    constructor(row, col, color, type) {
+        this.row = row;
+        this.col = col;
+        this.color = color; // 'white' or 'black'
+        this.type = type;   // 'king', 'queen', 'rook', 'bishop', 'knight', 'pawn'
+        this.hasMoved = false;
+        this.symbol = this.getSymbol();
+    }
 
+    /**
+     * Get Unicode symbol for the piece
+     */
+    getSymbol() {
+        const symbols = {
+            white: {
+                king: '♔',
+                queen: '♕',
+                rook: '♖',
+                bishop: '♗',
+                knight: '♘',
+                pawn: '♙'
+            },
+            black: {
+                king: '♚',
+                queen: '♛',
+                rook: '♜',
+                bishop: '♝',
+                knight: '♞',
+                pawn: '♟'
+            }
+        };
+        return symbols[this.color][this.type];
+    }
 
-	hasRank(rank) {
-		return this.rank == rank;
-	}
+    /**
+     * Get the value of the piece for scoring
+     */
+    getValue() {
+        const values = {
+            pawn: 1,
+            knight: 3,
+            bishop: 3,
+            rook: 5,
+            queen: 9,
+            king: 0
+        };
+        return values[this.type];
+    }
 
-	changePosition(position) {
-		this.position = parseInt(position);
-	}
+    /**
+     * Check if a position is on the board
+     */
+    isValidPosition(row, col) {
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
 
-	getMovesTop() {
-		const movesTop = [];
-		for (let move = this.position+10; move <= 88; move+=10) movesTop.push(move);
-		return movesTop;
-	}
+    /**
+     * Get all possible moves for this piece (to be overridden by subclasses)
+     * Returns array of {row, col} objects
+     */
+    getPossibleMoves(board) {
+        return [];
+    }
 
-	getMovesBottom() {
-		const movesBottom = [];
-		for (let move = this.position-10; move >= 11 ; move-=10) movesBottom.push(move);
-		return movesBottom;
-	}
+    /**
+     * Helper method to add moves in a direction until blocked
+     */
+    addMovesInDirection(board, rowDelta, colDelta, limit = 8) {
+        const moves = [];
+        let currentRow = this.row + rowDelta;
+        let currentCol = this.col + colDelta;
+        let steps = 0;
 
-	getMovesRight() {
-		const num = this.position+'';
-		const movesRight = [];
-		for (let move = this.position+1; move <= parseInt(num[0]+'8'); move++) movesRight.push(move);
-		return movesRight;
-	}
+        while (this.isValidPosition(currentRow, currentCol) && steps < limit) {
+            const targetPiece = board[currentRow][currentCol];
 
-	getMovesLeft() {
-		const num = this.position+'';
-		const movesLeft = [];
-		for (let move = this.position-1; move >= parseInt(num[0]+'1'); move--) movesLeft.push(move);
-		return movesLeft;
-	}
+            if (targetPiece === null) {
+                // Empty square - can move here
+                moves.push({ row: currentRow, col: currentCol });
+            } else if (targetPiece.color !== this.color) {
+                // Enemy piece - can capture
+                moves.push({ row: currentRow, col: currentCol });
+                break; // Can't move past this piece
+            } else {
+                // Friendly piece - can't move here
+                break;
+            }
 
-	getMovesTopRight() {
-		const movesTopRight = [];
-		for (let move = this.position+11; move <= 88; move+=11) {
-			const firstDigit = (''+move)[1];
-			if (firstDigit > 8 || firstDigit < 1) break;
-			movesTopRight.push(move);
-		}
-		return movesTopRight;
-	}
+            currentRow += rowDelta;
+            currentCol += colDelta;
+            steps++;
+        }
 
-	getMovesTopLeft() {
-		const movesTopLeft = [];
-		for (let move = this.position+9; move <= 88; move+=9) {
-			const firstDigit = (''+move)[1];
-			if (firstDigit > 8 || firstDigit < 1) break;
-			movesTopLeft.push(move);
-		}
-		return movesTopLeft;
-	}
+        return moves;
+    }
 
-	getMovesBottomRight() {
-		const movesBottomRight = [];
-		for (let move = this.position-9; move >= 11 ; move-=9) {
-			const firstDigit = (''+move)[1];
-			if (firstDigit > 8 || firstDigit < 1) break;
-			movesBottomRight.push(move);
-		}
-		return movesBottomRight;
-	}
+    /**
+     * Move the piece to a new position
+     */
+    moveTo(row, col) {
+        this.row = row;
+        this.col = col;
+        this.hasMoved = true;
+    }
 
-	getMovesBottomLeft() {
-		const movesBottomLeft = [];
-		for (let move = this.position-11; move >= 11 ; move-=11) {
-			const firstDigit = (''+move)[1];
-			if (firstDigit > 8 || firstDigit < 1) break;
-			movesBottomLeft.push(move);
-		}
-		return movesBottomLeft;
-	}
+    /**
+     * Create a copy of this piece
+     */
+    clone() {
+        const PieceClass = this.constructor;
+        const cloned = new PieceClass(this.row, this.col, this.color);
+        cloned.hasMoved = this.hasMoved;
+        return cloned;
+    }
 }

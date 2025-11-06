@@ -1,15 +1,27 @@
+/**
+ * Rook piece
+ * Moves any number of squares along rank or file
+ */
 class Rook extends Piece {
-	constructor(position, name) {
-		super(position, 'rook', name);
-		this.ableToCastle = true;
-	}
+    constructor(row, col, color) {
+        super(row, col, color, 'rook');
+    }
 
-	changePosition(position) {
-		this.position = parseInt(position);
-		this.ableToCastle = false;
-	}
+    getPossibleMoves(board) {
+        const moves = [];
 
-	getAllowedMoves() {
-		return [ this.getMovesTop(), this.getMovesBottom(), this.getMovesRight(), this.getMovesLeft() ];
-	}
+        // Rook moves horizontally and vertically
+        const directions = [
+            [-1, 0],  // Up
+            [1, 0],   // Down
+            [0, -1],  // Left
+            [0, 1]    // Right
+        ];
+
+        for (const [rowDelta, colDelta] of directions) {
+            moves.push(...this.addMovesInDirection(board, rowDelta, colDelta));
+        }
+
+        return moves;
+    }
 }

@@ -1,225 +1,481 @@
-*{
-	margin: 0;
-	padding: 0;
-}
-body{
-	background: #ddd;
-}
-#board{
-	width: 600px;
-	height: 600px;
-	border:3px #333 solid;
-}
-#board div div{
-	float: left;
-	width: 75px;
-	height: 75px;
-	box-sizing:border-box;
-	border: #000 solid .01cm;
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#board .even div:nth-child(even){
-	background: #ccd;
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --light-square: #f0d9b5;
+    --dark-square: #b58863;
+    --highlight-color: #7fa650;
+    --selected-color: #f7ec94;
+    --check-color: #ff6b6b;
+    --white-color: #fff;
+    --black-color: #000;
+    --text-color: #2c3e50;
+    --bg-color: #ecf0f1;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-#board .even div:nth-child(odd){
-	background: rgb(112,112,112);/*621700*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-color);
 }
 
-#board .odd div:nth-child(even){
-	background: rgb(112,112,112);/*621700*/
+.hidden {
+    display: none !important;
 }
 
-#board .odd div:nth-child(odd){
-	background: #ccd;
+/* Start Screen */
+.start-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.animate{
-	animation: rotateBoard 1s ease-out;
-	animation-fill-mode: both;
-}
-@keyframes rotateBoard { 
-  0% {
-    transform: rotateZ(0);
-  }
-  100%{
-  	transform: rotateZ(-180deg);
-  }
-
-}
-.forward{
-	transform: rotateZ(-180deg);
-}
-.backward{
-	transform: rotateZ(0);
-}
-.animate-backward{
-	animation: rotateBoardBackward 1s ease-out;
-	animation-fill-mode: both;
-}
-@keyframes rotateBoardBackward { 
-  0% {
-    transform: rotateZ(-180deg);
-  }
-  100%{
-  	transform: rotateZ(0);
-  }
-
-}
-img{
-	width: 75px;
-	height: 75px; 
-}
-.allowed{
-	opacity: .8;
-	background: radial-gradient(#333,#222 )!important;
-	/*-webkit-box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);
-	box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);*/
-	border:1px solid black !important;
-}
-.clicked-square{
-	background: radial-gradient(#333,#222 )!important;
-	border:1px solid black !important;
-}
-#sematary img{
-	transform: rotateZ(0);
-}
-#whiteSematary{
-	position: absolute;
-    top: 0;
-    left: 610px;
-    width: 180px;
-}
-#blackSematary{
-	position: absolute;
-    top: 0;
-    left: -190px;
-    width: 180px;
-}
-#blackSematary div{
-	overflow-y: auto;
-	margin-bottom: 2px;
-}
-#blackSematary img{
-	float: right;
-}
-#sematary img{
-	width: 60px;
-	height: 60px;
-}
-#endscene{
-	position: relative;
-	display: none;
-	opacity: 0;
-	z-index: 1;
-}
-.overlay{
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	background: #000;
-	opacity: .5;
-}
-#endscene p{
-	position: fixed;
-	color:#fff;
-	z-index: 2;
-	width: 100%;
+.start-content {
     text-align: center;
-    margin-top: 40vh;
-    font-size: 40px;
-}
-.show{
-	display: block !important;
-	animation: showMessage 1s ease-out;
-	animation-fill-mode: both;
-}
-@keyframes showMessage { 
-  0% {
-  	opacity: 0;
-  }
-  100%{
-  	opacity: 1;
-  }
-
-}
-#turn{
-	text-align: center;
-	font-size: 18px;
-}
-.winning-sign:first-letter{
-	text-transform: uppercase;
+    background: white;
+    padding: 60px 80px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.5s ease-in;
 }
 
-.flip-board{
-	padding: 10px 20px;
-    border-radius: 5px !important;
-    outline: 0;
-    background: #7f979e;
+.start-content h1 {
+    font-size: 56px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #7f8c8d;
+    margin-bottom: 40px;
+}
+
+/* Buttons */
+.primary-btn {
+    background: var(--secondary-color);
     color: white;
-    border: 0;
+    border: none;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
 }
 
-.player-timers {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
+.primary-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
-.player-timer {
-  font-size: 1.2rem;
+.secondary-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.timer-label {
-  font-weight: bold;
-  margin-right: 5px;
+.secondary-btn:hover {
+    background: #c0392b;
 }
 
-.white-timer {
-  color: #000;
+.icon-btn {
+    background: var(--bg-color);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 15px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.black-timer {
-  color: #000;
+.icon-btn:hover {
+    background: var(--primary-color);
+    color: white;
 }
 
-.start-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-  font-family: Arial, sans-serif;
-  text-align: center;
+/* Game Screen */
+.game-screen {
+    min-height: 100vh;
+    padding: 20px;
+    animation: fadeIn 0.5s ease-in;
 }
 
-.start-page h1 {
-  font-size: 48px;
-  margin-bottom: 30px;
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
 }
 
-#start-button {
-  font-size: 24px;
-  padding: 10px 20px;
-  cursor: pointer;
-  color: red;
-}
-.start-page h2 {
-  font-size: 24px;
-  margin-top: 30px;
-  color: #666;
+.game-header h2 {
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
 }
 
-#score-container {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
+/* Game Container */
+.game-container {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: start;
 }
 
-#white-score,
-#black-score {
-  font-size: 18px;
-  font-weight: bold;
+/* Side Panels */
+.side-panel {
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.side-panel h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+}
+
+.score {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+}
+
+.score-value {
+    color: var(--secondary-color);
+    font-size: 20px;
+}
+
+.captured-pieces {
+    min-height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 10px;
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+}
+
+.captured-piece {
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Board Container */
+.board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Chess Board */
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: 640px;
+    height: 640px;
+    border: 4px solid var(--primary-color);
+    box-shadow: var(--shadow-lg);
+    background: white;
+    transition: transform 0.6s ease;
+}
+
+.chess-board.flipped {
+    transform: rotate(180deg);
+}
+
+/* Squares */
+.square {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.square.light {
+    background-color: var(--light-square);
+}
+
+.square.dark {
+    background-color: var(--dark-square);
+}
+
+.square.selected {
+    background-color: var(--selected-color) !important;
+    box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.square.valid-move {
+    position: relative;
+}
+
+.square.valid-move::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(127, 166, 80, 0.6);
+    border-radius: 50%;
+}
+
+.square.valid-move.has-piece::after {
+    width: 70px;
+    height: 70px;
+    background-color: transparent;
+    border: 4px solid rgba(127, 166, 80, 0.8);
+    border-radius: 50%;
+}
+
+.square.in-check {
+    background-color: var(--check-color) !important;
+    animation: pulse 1s infinite;
+}
+
+/* Chess Pieces */
+.piece {
+    font-size: 60px;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 10;
+}
+
+.piece:active {
+    cursor: grabbing;
+}
+
+.piece:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.chess-board.flipped .piece {
+    transform: rotate(180deg);
+}
+
+.chess-board.flipped .piece:hover {
+    transform: rotate(180deg) scale(1.1);
+}
+
+/* Board Controls */
+.board-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background: white;
+    padding: 15px 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.turn-indicator {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px 60px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease-out;
+}
+
+.modal-content h2 {
+    font-size: 36px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.modal-content h3 {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.modal-content p {
+    font-size: 20px;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+}
+
+/* Promotion Pieces */
+.promotion-pieces {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.promotion-piece {
+    font-size: 64px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+.promotion-piece:hover {
+    background: var(--bg-color);
+    transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .game-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .side-panel {
+        order: 3;
+    }
+
+    .board-container {
+        order: 1;
+    }
+
+    .left-panel {
+        order: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .chess-board {
+        width: 480px;
+        height: 480px;
+    }
+
+    .square {
+        width: 60px;
+        height: 60px;
+    }
+
+    .piece {
+        font-size: 45px;
+    }
+
+    .start-content {
+        padding: 40px 50px;
+    }
+
+    .start-content h1 {
+        font-size: 42px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chess-board {
+        width: 320px;
+        height: 320px;
+    }
+
+    .square {
+        width: 40px;
+        height: 40px;
+    }
+
+    .piece {
+        font-size: 30px;
+    }
 }
